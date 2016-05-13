@@ -6,6 +6,7 @@
 # updated_time: May 13th 2016
 
 # Claim: the install guide is got from : 
+#        https://github.com/robbyrussell/oh-my-zsh
 
 # prerequisites
 #     have installed 'curl' and zsh
@@ -16,6 +17,7 @@ if [[ $EUID -ne 0 ]]; then
     exit 1
 fi
 
+sudo apt-get install -y curl
 sudo apt-get install --force-yes -y zsh zsh-common
 
 if [[ "$?" -ne 0 ]]; then
