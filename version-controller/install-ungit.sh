@@ -4,6 +4,7 @@
 # email: rajen.lyz@gmail.com
 # created_date: May 13th 2016
 # updated_date: May 13th 2016
+#               Jun 3rd 2016
 
 # Prerequisites
 #     TO Install: NVM, Node.js, NPM
@@ -47,6 +48,9 @@ fi
 #install nvm 
 cd $MYPATH
 curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.31.1/install.sh | bash
+
+# source nvm env vars
+. /$MYPATH/.bashrc
 
 # use nvm to install node.js
 nvm install stable
