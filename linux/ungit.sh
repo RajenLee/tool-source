@@ -1,10 +1,12 @@
 #!/bin/bash -x
 
+# brief: install ungit
 # owner: Rajen
-# email: rajen.lyz@gmail.com
+# email: rajen@rajen.info
 # created_date: May 13th 2016
 # updated_date: May 13th 2016
 #               Jun 3rd 2016
+#               Feb 15th 2017
 
 # Prerequisites
 #     TO Install: NVM, Node.js, NPM

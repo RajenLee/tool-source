@@ -1,9 +1,11 @@
 #!/bin/bash -x
 
+# brief: install oh-my-zsh
 # owner: Rajen
-# email: rajen.lyz@gmail.com
+# email: rajen@rajen.info
 # created_time: May 13th 2016
 # updated_time: May 13th 2016
+#		Feb 15th 2017
 
 # Claim: the install guide is got from : 
 #        https://github.com/robbyrussell/oh-my-zsh
