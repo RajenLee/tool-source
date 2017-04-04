@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# author test
+# author rajen
 # date 1/19/2017
 # version 0
 
@@ -37,15 +37,18 @@ function pre_install {
 ## install Apache2
 function apache_install {
     sudo apt-get install -y apache2
+	sudo cp /etc/apache2/apache2.conf /etc/apache2/apache2.conf.bk
     echo "ServerName $(hostname)" | sudo tee -a /etc/apache2/apache2.conf
+	sudo cp /etc/hosts /etc/hosts.bk
     sudo sed -i "2i127.0.0.1 $(hostname)" /etc/hosts
     sudo sed -i "3i127.0.1.1 $(hostname)" /etc/hosts
-
+	sudo service apache2 restart
 }
 
 ## install MySQL and create database:wordpress 
 function mysql_install {
     sudo apt-get install -y mysql-server php5-mysql
+	sudo cp /etc/mysql/my.cnf /etc/mysql/my.cnf.bk
 	sudo sed -i -r "/\[client\]/auser=$DB_USER\npassword=$DB_PASSWD" /etc/mysql/my.cnf 
 	sudo service mysql restart
 
@@ -81,10 +84,12 @@ function php_install {
 }
 
 function php_config {
+	sudo cp /etc/php5/apache2/php.ini /etc/php5/apache2/php.ini.bk
     sudo sed -i -r "s/^expose_php.+/expose_php = Off/" /etc/php5/apache2/php.ini
     sudo sed -i -r "s/^allow_url_fopen.+/allow_url_fopen = Off/" /etc/php5/apache2/php.ini
     sudo service apache2 restart
     sudo a2enmod rewrite
+	sudo cp /etc/apache2/mods-enabled/dir.conf /etc/apache2/mods-enabled/dir.conf.bk
     sudo sed -i -r "s/(.*)DirectoryIndex(.*)index.php(.*)/\1DirectoryIndex index.php\2\3/" /etc/apache2/mods-enabled/dir.conf
     sudo service apache2 restart
     
