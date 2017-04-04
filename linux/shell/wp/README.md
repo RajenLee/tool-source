@@ -2,7 +2,7 @@
 * add a record into DNS
 * config apache server config: site-enables/*.conf
 * wordpress config
-	- thremes: git clone repo from github
+	- themes: git clone repo from github
 	- colors:header-background:5d6e7a
 	- menus:top-menu:Blog/linux/About
 		+ menus:top-menu:blog:http://www.example.com
