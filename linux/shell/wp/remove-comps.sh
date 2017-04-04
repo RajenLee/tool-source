@@ -51,9 +51,10 @@ function mysql_remove {
 
 
 function mysql_clean_db {
-	mysql -u $DB_USER -e "REVOKE ALL on wordpress.* from $DB_WORDPRESS_USER@localhost;"
-	mysql -u $DB_USER -e "DELETE from user where user=\"$DB_WORDPRESS_USER\" and host=\"localhost\";"
+	mysql -u $DB_USER -e "REVOKE ALL on ${DB_WORDPRESS_NAME}.* from $DB_WORDPRESS_USER@localhost;"
+	mysql -u $DB_USER -e "DELETE from mysql.user where User=\"$DB_WORDPRESS_USER\";"
 	mysql -u $DB_USER -e "DROP DATABASE $DB_WORDPRESS_NAME;"
+    mysql -u $DB_USER -e "FLUSH PRIVILEGES;"
 }
 
 ## remove php

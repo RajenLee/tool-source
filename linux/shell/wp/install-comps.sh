@@ -59,7 +59,7 @@ function mysql_create_db {
     mysql -u $DB_USER -e "CREATE DATABASE IF NOT EXISTS $DB_WORDPRESS_NAME;"
 	## IMPORTANT: pls make sure $DB_WORDPRESS_USER not exist in db
     mysql -u $DB_USER -e "CREATE USER $DB_WORDPRESS_USER@localhost IDENTIFIED BY '$DB_WORDPRESS_PASSWD';"
-    mysql -u $DB_USER -e "GRANT ALL PRIVILEGES ON wordpress.* TO $DB_WORDPRESS_USER@localhost;"
+    mysql -u $DB_USER -e "GRANT ALL PRIVILEGES ON ${DB_WORDPRESS_NAME}.* TO $DB_WORDPRESS_USER@localhost;"
     mysql -u $DB_USER -e "FLUSH PRIVILEGES;"
 }
 
