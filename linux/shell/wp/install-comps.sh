@@ -1,4 +1,5 @@
 #!/bin/bash
+set -xe
 
 # author rajen
 # date 1/19/2017
@@ -20,6 +21,7 @@ DB_PASSWD=$1
 DB_WORDPRESS_NAME='wordpress'
 DB_WORDPRESS_USER=$1
 DB_WORDPRESS_PASSWD=$1
+PHP_VERSION=${2:-"5.6"}
 
 # install LAMP
 #   * Linux
@@ -31,6 +33,7 @@ DB_WORDPRESS_PASSWD=$1
 
 ## prepare for installation
 function pre_install {
+    sudo add-apt-repository -y ppa:ondrej/php
     sudo apt-get update
 }
 
@@ -47,9 +50,20 @@ function apache_install {
 
 ## install MySQL and create database:wordpress 
 function mysql_install {
-    sudo apt-get install -y mysql-server php5-mysql
-	sudo cp /etc/mysql/my.cnf /etc/mysql/my.cnf.bk
-	sudo sed -i -r "/\[client\]/auser=$DB_USER\npassword=$DB_PASSWD" /etc/mysql/my.cnf 
+    sudo apt-get install -y mysql-server php${PHP_VERSION}-mysql
+    sudo apt-get install -y mysql-common mysql-client
+    if [[ -f /etc/mysql/my.cnf ]]; then
+        sudo cp /etc/mysql/my.cnf /etc/mysql/my.cnf.bk
+    else
+        sudo touch /etc/mysql/my.cnf
+    fi
+    sudo tee -a /etc/mysql/my.cnf <<EOF
+[client]
+user="${DB_USER}"
+password="${DB_PASSWD}"
+EOF
+
+	#sudo sed -i -r "/\[client\]/auser=$DB_USER\npassword=$DB_PASSWD" /etc/mysql/my.cnf 
 	sudo service mysql restart
 
 }
@@ -77,13 +91,20 @@ function mysql_export {
 }
 ## install php
 function php_install {
-    sudo apt-get install -y php5 libapache2-mod-php5 php5-mcrypt
-    sudo apt-get install -y php5-gd php5-curl libssh2-php
-    sudo apt-get install -y php5-cli
-    sudo apt-get install -y php5-mysqlnd-ms
+    sudo apt-get install -y php${PHP_VERSION}
+    sudo apt-get install -y libapache2-mod-php${PHP_VERSION}
+    sudo apt-get install -y php${PHP_VERSION}-mcrypt
+    sudo apt-get install -y php${PHP_VERSION}-gd
+    sudo apt-get install -y php${PHP_VERSION}-curl
+    # for ubuntu 14.04
+    #sudo apt-get install -y libssh2-php
+    # for ubuntu 16.04
+    sudo apt-get install -y php-ssh2
+    sudo apt-get install -y php${PHP_VERSION}-cli
+    sudo apt-get install -y php${PHP_VERSION}-mysqlnd-ms
 }
 
-function php_config {
+function php5_config {
 	sudo cp /etc/php5/apache2/php.ini /etc/php5/apache2/php.ini.bk
     sudo sed -i -r "s/^expose_php.+/expose_php = Off/" /etc/php5/apache2/php.ini
     sudo sed -i -r "s/^allow_url_fopen.+/allow_url_fopen = Off/" /etc/php5/apache2/php.ini
@@ -95,6 +116,17 @@ function php_config {
     
 }
 
+function php5X_config {
+	sudo cp /etc/php/${PHP_VERSION}/apache2/php.ini /etc/php/${PHP_VERSION}/apache2/php.ini.bk
+    sudo sed -i -r "s/^expose_php.+/expose_php = Off/" /etc/php/${PHP_VERSION}/apache2/php.ini
+    sudo sed -i -r "s/^allow_url_fopen.+/allow_url_fopen = Off/" /etc/php/${PHP_VERSION}/apache2/php.ini
+    sudo service apache2 restart
+    sudo a2enmod rewrite
+	sudo cp /etc/apache2/mods-enabled/dir.conf /etc/apache2/mods-enabled/dir.conf.bk
+    sudo sed -i -r "s/(.*)DirectoryIndex(.*)index.php(.*)/\1DirectoryIndex index.php\2\3/" /etc/apache2/mods-enabled/dir.conf
+    sudo service apache2 restart
+    
+}
 
 # download wordpress
 function wordpress_download {
@@ -116,11 +148,11 @@ function wordpress_download {
     sudo service apache2 restart
 }
 
-pre_install
-apache_install
-mysql_install
+#pre_install
+#apache_install
+#mysql_install
 mysql_create_db
-php_install
-php_config
-wordpress_download
-
+#php_install
+#php5X_config
+#wordpress_download
+#mysql_import

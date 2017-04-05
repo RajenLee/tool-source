@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-if [[ $EUID -eq 0 ]]; then
+if [[ $EUID != 0 ]]; then
 	echo "pls use root role"
 	exit 1
 fi
@@ -11,13 +11,13 @@ if [[ ! $1 || ! $2 || ! $3 ]]; then
 	exit 1
 fi
 
-$DNS_SERVER=$1
-$USER_EMAIL=$2
-$IP_SERVER=$3
+DNS_SERVER=$1
+USER_EMAIL=$2
+IP_SERVER=$3
 
 sudo rm -rf /etc/apache2/sites-enabled/*
-sudo mkdir /var/www/html/ip
-sudo tee /etc/apache2/sites-enabled/dns.conf <<EOF  
+sudo mkdir /var/www/ip
+sudo tee /etc/apache2/sites-enabled/dns.conf <<EOF
 <VirtualHost *:80>
 	ServerName $DNS_SERVER
 	ServerAdmin $USER_EMAIL
@@ -31,7 +31,7 @@ sudo tee /etc/apache2/sites-enabled/dns.conf <<EOF
 </VirtualHost>
 <VirtualHost *:80>
 	ServerName $IP_SERVER
-	DocumentRoot /var/www/html/ip
+	DocumentRoot /var/www/ip
 </VirtualHost>
 EOF
 
