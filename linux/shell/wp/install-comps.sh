@@ -33,7 +33,9 @@ PHP_VERSION=${2:-"5.6"}
 
 ## prepare for installation
 function pre_install {
-    sudo add-apt-repository -y ppa:ondrej/php
+    if [[ ${PHP_VERSION} != '5' ]]; then
+        sudo add-apt-repository -y ppa:ondrej/php
+    fi
     sudo apt-get update
 }
 
@@ -50,7 +52,7 @@ function apache_install {
 
 ## install MySQL and create database:wordpress 
 function mysql_install {
-    sudo apt-get install -y mysql-server php${PHP_VERSION}-mysql
+    sudo apt-get install -y mysql-server
     sudo apt-get install -y mysql-common mysql-client
     if [[ -f /etc/mysql/my.cnf ]]; then
         sudo cp /etc/mysql/my.cnf /etc/mysql/my.cnf.bk
@@ -105,7 +107,7 @@ function php_install {
 }
 
 function php5X_install {
-    sudo apt-get install -y php${PHP_VERSION}
+    sudo apt-get install -y php${PHP_VERSION} php${PHP_VERSION}-mysql
     sudo apt-get install -y libapache2-mod-php${PHP_VERSION}
     sudo apt-get install -y php${PHP_VERSION}-mcrypt
     sudo apt-get install -y php${PHP_VERSION}-gd
