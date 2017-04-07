@@ -33,7 +33,9 @@ PHP_VERSION=${2:-"5.6"}
 
 ## prepare for installation
 function pre_install {
-    sudo add-apt-repository -y ppa:ondrej/php
+    if [[ ${PHP_VERSION} != '5' ]]; then
+        sudo add-apt-repository -y ppa:ondrej/php
+    fi
     sudo apt-get update
 }
 
@@ -50,7 +52,7 @@ function apache_install {
 
 ## install MySQL and create database:wordpress 
 function mysql_install {
-    sudo apt-get install -y mysql-server php${PHP_VERSION}-mysql
+    sudo apt-get install -y mysql-server
     sudo apt-get install -y mysql-common mysql-client
     if [[ -f /etc/mysql/my.cnf ]]; then
         sudo cp /etc/mysql/my.cnf /etc/mysql/my.cnf.bk
@@ -91,7 +93,21 @@ function mysql_export {
 }
 ## install php
 function php_install {
-    sudo apt-get install -y php${PHP_VERSION}
+    sudo apt-get install -y php5
+    sudo apt-get install -y libapache2-mod-php5
+    sudo apt-get install -y php5-mcrypt
+    sudo apt-get install -y php5-gd
+    sudo apt-get install -y php5-curl
+    # for ubuntu 14.04
+    sudo apt-get install -y libssh2-php
+    # for ubuntu 16.04
+    #sudo apt-get install -y php-ssh2
+    sudo apt-get install -y php5-cli
+    sudo apt-get install -y php5-mysqlnd-ms
+}
+
+function php5X_install {
+    sudo apt-get install -y php${PHP_VERSION} php${PHP_VERSION}-mysql
     sudo apt-get install -y libapache2-mod-php${PHP_VERSION}
     sudo apt-get install -y php${PHP_VERSION}-mcrypt
     sudo apt-get install -y php${PHP_VERSION}-gd
@@ -103,6 +119,7 @@ function php_install {
     sudo apt-get install -y php${PHP_VERSION}-cli
     sudo apt-get install -y php${PHP_VERSION}-mysqlnd-ms
 }
+
 
 function php5_config {
 	sudo cp /etc/php5/apache2/php.ini /etc/php5/apache2/php.ini.bk
@@ -148,11 +165,11 @@ function wordpress_download {
     sudo service apache2 restart
 }
 
-#pre_install
-#apache_install
-#mysql_install
+pre_install
+apache_install
+mysql_install
 mysql_create_db
-#php_install
-#php5X_config
-#wordpress_download
-#mysql_import
+php_install
+php5_config
+wordpress_download
+mysql_import

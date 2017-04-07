@@ -22,12 +22,12 @@ sudo tee /etc/apache2/sites-enabled/dns.conf <<EOF
 	ServerName $DNS_SERVER
 	ServerAdmin $USER_EMAIL
 	DocumentRoot /var/www/html
-    <Directory /var/www/html>
-        Options Indexes FollowSymLinks
-        AllowOverride All
-        Order allow,deny
-        Allow from all
-    </Directory>
+        <Directory /var/www/html>
+            Options Indexes FollowSymLinks
+            AllowOverride All
+            Order allow,deny
+            Allow from all
+        </Directory>
 </VirtualHost>
 <VirtualHost *:80>
 	ServerName $IP_SERVER
